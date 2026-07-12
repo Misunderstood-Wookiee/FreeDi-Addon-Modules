@@ -18,8 +18,15 @@ Current modules include:
 - Bed Soak
 - Caselight Effects
 
-## Documentation Status
+## Documentation
 
-This repository is actively documented. The README provides a high-level overview, while detailed usage and setup documentation will continue to be added and improved in the GitHub Docs for this project.
+Full project documentation is provided in the GitHub docs pages in this repository:
 
-As new modules are added or existing modules are updated, corresponding documentation updates will be published in GitHub Docs.
+- [GitHub Docs Home](.github/docs/README.md)
+- [Repository Overview](.github/docs/RepositoryOverview.md)
+- [Getting Started](.github/docs/getting-started.md)
+- [Adaptive Pressure Advance](.github/docs/modules/adaptive-pressure-advance.md)
+- [Bed Soak](.github/docs/modules/bed-soak.md)
+- [Caselight Effects](.github/docs/modules/caselight-effects.md)
+
+As new modules are added or existing modules are updated, corresponding documentation updates will be published in these GitHub docs pages.
