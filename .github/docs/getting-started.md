@@ -12,8 +12,9 @@ Before using any module in this repository, confirm all of the following:
 
 1. Copy this repository into your Klipper config storage location.
 2. Include the module file(s) you want in your main printer configuration.
-3. Restart Klipper after adding includes.
-4. Test each macro manually before wiring it into slicer automation.
+3. Update you macros with the module parameters when necessary.
+4. Restart Klipper after adding includes.
+5. Test each macro manually before wiring it into slicer automation.
 
 ## Recommended Validation Flow
 
