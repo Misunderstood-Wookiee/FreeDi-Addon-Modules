@@ -4,23 +4,23 @@ This documentation covers all modules in this repository, their required context
 
 ## Important Compatibility Notice
 
-These modules are only supported when both conditions are true:
+- Caselight Effects requires FreeDi Firmware and FreeDi base machine configuration files.
+- Adaptive Pressure Advance, Adaptive Line Purge, and Bed Soak are designed for FreeDi workflows but may also work on standard mainline Klipper/Kalico firmware depending on printer configuration.
 
-- The printer is flashed with FreeDi Firmware.
-- The printer uses FreeDi base machine configuration files.
-
-If you are not running a FreeDi firmware and FreeDi base config stack, this repository is out of scope and not supported.
+For non-FreeDi stacks, treat these modules as use-at-your-own-risk and validate behavior before production prints.
 
 ## Docs Index
 
 - [Getting Started](getting-started.md)
 - [Adaptive Pressure Advance](modules/adaptive-pressure-advance.md)
+- [Adaptive Line Purge](modules/adaptive-line-purge.md)
 - [Bed Soak](modules/bed-soak.md)
 - [Caselight Effects](modules/caselight-effects.md)
 
 ## Repository Layout
 
 - `Adapative Pressure Advance/adaptive_pressure_advance_module.cfg`
+- `Adapative Line Purge/adaptive_line_purge.cfg`
 - `Bed Soak/bed_soak_module.cfg`
 - `Caselight Effects/caselight_effects_core_module.cfg`
 - `Caselight Effects/caselight_effects_sequences_module.cfg`
