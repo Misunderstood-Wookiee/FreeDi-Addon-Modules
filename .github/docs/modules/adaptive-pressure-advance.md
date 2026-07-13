@@ -31,13 +31,13 @@ Selects a pressure advance value using slicer input, material defaults, nozzle s
 ## Start G-code Example
 
 ```gcode
-ADAPTIVE_PRESSURE_ADVANCE MATERIAL={material} PRESSURE_ADVANCE={pa} NOZZLE={nozzle} FORCE={force_pa} SMOOTH_TIME={smooth_time}
+ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_advance] NOZZLE=[nozzle_diameter] FORCE=[force_pa] SMOOTH_TIME=[smooth_time]
 ```
 
 If your slicer does not expose a smooth time variable:
 
 ```gcode
-ADAPTIVE_PRESSURE_ADVANCE MATERIAL={material} PRESSURE_ADVANCE={pa} NOZZLE={nozzle} FORCE={force_pa} SMOOTH_TIME=0.040
+ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_advance] NOZZLE=[nozzle_diameter] FORCE=[force_pa] SMOOTH_TIME=0.040
 ```
 
 ## Notes
