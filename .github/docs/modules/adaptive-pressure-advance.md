@@ -16,7 +16,7 @@ Selects a pressure advance value using slicer input, material defaults, nozzle s
 - `MATERIAL=<string>`: Material profile name, for example `PLA`, `PETG-CF`, `ABS`.
 - `NOZZLE=<float>`: Nozzle diameter in mm. Default is `0.4`.
 - `FORCE=<bool-string>`: `True` or `False`. When `True`, ignores slicer pressure advance and uses module defaults.
-- `SMOOTH_TIME=<float>`: Pressure advance smooth time. Default is `0.040`.
+- `SMOOTH_TIME=<float>`: Pressure advance smooth time. Default is `0.03`.
 
 ## Behavior Summary
 
@@ -24,9 +24,11 @@ Selects a pressure advance value using slicer input, material defaults, nozzle s
 2. Selects base default pressure advance by material.
 3. Applies nozzle-based scaling factor.
 4. Chooses slicer value unless `FORCE=True`.
-5. Clamps pressure advance to `0.0` through `0.5`.
-6. Clamps smooth time to a safe range (`0.040` fallback if invalid, max `0.2`).
-7. Applies values via `SET_PRESSURE_ADVANCE`.
+5. Validates pressure advance with a strict safe range of `> 0` and `<= 0.5`.
+6. If slicer pressure advance is invalid (`<= 0` or `> 0.5`), logs a warning with `action_respond_info` and falls back to `0.042`.
+7. If any computed pressure advance still ends up out of range, it is also reset to `0.042` with a warning.
+8. Clamps smooth time to a safe range (`0.03` fallback if invalid, max `0.2`).
+9. Applies values via `SET_PRESSURE_ADVANCE`.
 
 ## Start G-code Example
 
@@ -37,7 +39,7 @@ ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_ad
 If your slicer does not expose a smooth time variable:
 
 ```gcode
-ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_advance] NOZZLE=[nozzle_diameter] FORCE=[force_pa] SMOOTH_TIME=0.040
+ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_advance] NOZZLE=[nozzle_diameter] FORCE=[force_pa] SMOOTH_TIME=0.03
 ```
 
 ## Notes
@@ -45,3 +47,4 @@ ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_ad
 - Keep slicer variable names aligned with your slicer profile.
 - `FORCE=True` is useful for enforcing printer-tuned defaults.
 - Tune material defaults in the module file for your machine and filament.
+- Invalid slicer PA values no longer hard-stop the macro; they are handled safely with warning messages and fallback `0.042`.
