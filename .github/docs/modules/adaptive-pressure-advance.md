@@ -25,10 +25,11 @@ Selects a pressure advance value using slicer input, material defaults, nozzle s
 3. Applies nozzle-based scaling factor.
 4. Chooses slicer value unless `FORCE=True`.
 5. Validates pressure advance with a strict safe range of `> 0` and `<= 0.5`.
-6. If slicer pressure advance is invalid (`<= 0` or `> 0.5`), logs a warning with `action_respond_info` and falls back to `0.042`.
-7. If any computed pressure advance still ends up out of range, it is also reset to `0.042` with a warning.
-8. Clamps smooth time to a safe range (`0.03` fallback if invalid, max `0.2`).
-9. Applies values via `SET_PRESSURE_ADVANCE`.
+6. If slicer pressure advance is invalid (`<= 0` or `> 0.5`), logs a warning with `action_respond_info` and falls back to the detected material default (including nozzle scaling).
+7. If the material-derived fallback is out of safe range, an emergency fallback of `0.042` is used.
+8. If any computed pressure advance still ends up out of range, it is reset to the material-derived fallback with a warning.
+9. Clamps smooth time to a safe range (`0.03` fallback if invalid, max `0.2`).
+10. Applies values via `SET_PRESSURE_ADVANCE`.
 
 ## Start G-code Example
 
@@ -47,4 +48,4 @@ ADAPTIVE_PRESSURE_ADVANCE MATERIAL=[filament_type] PRESSURE_ADVANCE=[pressure_ad
 - Keep slicer variable names aligned with your slicer profile.
 - `FORCE=True` is useful for enforcing printer-tuned defaults.
 - Tune material defaults in the module file for your machine and filament.
-- Invalid slicer PA values no longer hard-stop the macro; they are handled safely with warning messages and fallback `0.042`.
+- Invalid slicer PA values no longer hard-stop the macro; they are handled safely with warning messages and material-aware fallback.
