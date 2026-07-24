@@ -6,7 +6,7 @@ FreeDi-Addon-Modules contains reusable Klipper module files for FreeDi-based pri
 
 Included modules:
 
-- Adaptive Pressure Advance
+- Dynamic Pressure Advance
 - Adaptive Line Purge
 - Bed Soak
 - Caselight Effects
@@ -16,13 +16,13 @@ Included modules:
 Compatibility guidance:
 
 1. Caselight Effects requires FreeDi Firmware and FreeDi base machine configuration files.
-2. Adaptive Pressure Advance, Adaptive Line Purge, and Bed Soak are designed for FreeDi workflows but may also work on standard mainline Klipper/Kalico firmware depending on your printer configuration.
+2. Dynamic Pressure Advance, Adaptive Line Purge, and Bed Soak are designed for FreeDi workflows but may also work on standard mainline Klipper/Kalico firmware depending on your printer configuration.
 
 For non-FreeDi stacks, treat these modules as use-at-your-own-risk and validate behavior before production prints.
 
 ## Module Source Files
 
-- `Adapative Pressure Advance/adaptive_pressure_advance_module.cfg`
+- `Dynamic Pressure Advance/dynamic_pressure_advance_module.cfg`
 - `Adapative Line Purge/adaptive_line_purge.cfg`
 - `Bed Soak/bed_soak_module.cfg`
 - `Caselight Effects/caselight_effects_core_module.cfg`

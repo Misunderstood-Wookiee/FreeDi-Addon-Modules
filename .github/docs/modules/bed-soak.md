@@ -8,26 +8,90 @@ Source file: `Bed Soak/bed_soak_module.cfg`
 
 ## Purpose
 
-Waits for the bed to reach target temperature and then performs a material-aware soak to improve thermal stability before printing.
+Waits for the bed to reach the resolved soak target temperature and then performs a material-aware soak to improve thermal stability before printing.
 
 ## Parameters
 
 - `MATERIAL=<string>`: Material profile name, for example `PLA`, `PLA+`, `PETG-CF`, `ABS`.
-- `BED_TEMP=<int>`: Target bed temperature in C.
-- `FORCE=<bool-string>`: `True` or `False`. Forces soak when `True`.
+- `BED_TEMP=<int>`: Preferred explicit soak target temperature in C.
+- `bed_target_temp=<int>`: Optional soak target alias accepted for start macro compatibility.
+- `FORCE_SOAK=<bool-string>`: `True` or `False`. Forces soak when `True`.
 
 ## Behavior Summary
 
 1. Normalizes material name into known families.
-2. Determines if soak is required using material class, bed temperature, or force override.
-3. Waits for bed temperature stability with `TEMPERATURE_WAIT`.
+2. Determines if soak is required using material class, resolved soak temperature, or force override.
+3. Waits for soak target stability with `TEMPERATURE_WAIT`.
 4. Applies material-specific soak duration.
 5. Emits status messages for operator visibility.
 
 ## Typical Usage
 
 ```gcode
-BED_SOAK MATERIAL={material} BED_TEMP={bed_temperature} FORCE=False
+BED_SOAK MATERIAL={material} BED_TEMP={bed_temperature} FORCE_SOAK=False
+```
+
+If the caller does not pass a soak target temperature, `BED_SOAK` falls back to the current `printer.heater_bed.target` value. This allows use in a `PRINT_START` flow where the bed target was already set earlier.
+
+## Recommended PRINT_START Parameters
+
+Add these parameters to your `PRINT_START` macro if you want to drive this module from slicer start G-code:
+
+- `MATERIAL`: Filament/material name from the slicer.
+- `BED_TEMP`: Preferred explicit soak target temperature.
+- `FORCE_SOAK`: Manual override flag, usually `False`.
+
+This module only uses `FORCE_SOAK`. It does not read `FORCE_PA`.
+
+For a full `PRINT_START` example showing parameter definitions for both modules together, see [Getting Started](../getting-started.md).
+
+Typical `PRINT_START` usage inside Klipper:
+
+```gcode
+BED_SOAK MATERIAL={material} BED_TEMP={bed_target_temp} FORCE_SOAK={force_soak}
+```
+
+If your `PRINT_START` macro already sets the bed target before calling `BED_SOAK`, you may omit `BED_TEMP` and rely on the heater target fallback:
+
+```gcode
+BED_SOAK MATERIAL={material} FORCE_SOAK={force_soak}
+```
+
+If you are using both Bed Soak and Dynamic Pressure Advance in the same `PRINT_START`, keep the force flags separate:
+
+```gcode
+DYNAMIC_PRESSURE_ADVANCE MATERIAL={material} PRESSURE_ADVANCE={pressure_advance} NOZZLE={nozzle} FORCE_PA={force_pa} SMOOTH_TIME={smooth_time}
+BED_SOAK MATERIAL={material} BED_TEMP={bed_target_temp} FORCE_SOAK={force_soak}
+```
+
+## Slicer Examples
+
+These examples show what to add in slicer start G-code so the values are available to your Klipper `PRINT_START` macro.
+
+For this module by itself, only `FORCE_SOAK` needs to be passed. `FORCE_PA` belongs to the Dynamic Pressure Advance module and should only be added if your `PRINT_START` also calls `DYNAMIC_PRESSURE_ADVANCE`.
+
+### PrusaSlicer
+
+Recommended slicer start G-code call:
+
+```gcode
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature] FORCE_SOAK=False
+```
+
+### OrcaSlicer
+
+Recommended slicer start G-code call:
+
+```gcode
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[nozzle_temperature_initial_layer] FORCE_SOAK=False
+```
+
+### Cura
+
+Recommended slicer start G-code call:
+
+```gcode
+PRINT_START MATERIAL={material_type} BED_TEMP={material_bed_temperature_layer_0} EXTRUDER_TEMP={material_print_temperature_layer_0} FORCE_SOAK=False
 ```
 
 ## Duration Guidance
@@ -41,6 +105,6 @@ Approximate soak durations from current module logic:
 
 ## Notes
 
-- If `BED_TEMP <= 0`, the macro falls back to `60` C.
+- Soak temperature resolution order is `BED_TEMP` -> `bed_target_temp` -> `printer.heater_bed.target` -> `60` C.
 - Soak may be skipped when conditions do not require it.
 - This macro is blocking by design while soak is running.
