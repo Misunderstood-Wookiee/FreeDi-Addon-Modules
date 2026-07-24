@@ -103,6 +103,45 @@ Approximate soak durations from current module logic:
 - `ABS`, `ASA`: 2.5 minutes
 - `NYLON`, `POLY`: 3 minutes
 
+## Debug and Testing (Before Printing)
+
+Run these from the Klipper console (Mainsail/Fluidd) to validate parameter flow and macro behavior before launching a real print.
+
+1. Confirm your bed target fallback path works:
+
+```gcode
+SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=60
+BED_SOAK MATERIAL=PLA FORCE_SOAK=False
+```
+
+Expected: `BED_SOAK` should resolve to the current bed target (`60`) even without `BED_TEMP`.
+
+2. Confirm explicit temperature override is honored:
+
+```gcode
+BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False
+```
+
+Expected: the macro should wait on `75` C (not the previous heater target) and apply PETG-class soak timing.
+
+3. Confirm force behavior for quick validation cycles:
+
+```gcode
+BED_SOAK MATERIAL=PLA BED_TEMP=60 FORCE_SOAK=True
+```
+
+Expected: soak path is forced and status messages clearly show execution of the soak branch.
+
+4. Verify your full `PRINT_START` parameter mapping without printing a part:
+
+```gcode
+PRINT_START MATERIAL=PLA BED_TEMP=60 EXTRUDER_TEMP=210 FORCE_SOAK=False
+```
+
+Expected: no unknown-parameter errors, and `BED_SOAK` receives the values your slicer is expected to pass.
+
+Tip: For faster test loops, use low but realistic bed targets (for example `50-60` C) and watch console output for each decision branch.
+
 ## Notes
 
 - Soak temperature resolution order is `BED_TEMP` -> `bed_target_temp` -> `printer.heater_bed.target` -> `60` C.

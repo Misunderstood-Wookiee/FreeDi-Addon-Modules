@@ -121,6 +121,52 @@ PRINT_START MATERIAL={material_type} BED_TEMP={material_bed_temperature_layer_0}
 
 In Cura, pressure advance is usually better left to the Klipper module unless you already maintain a custom slicer variable for it.
 
+## Debug and Testing (Before Printing)
+
+Run these from the Klipper console (Mainsail/Fluidd) to validate pressure advance inputs and fallback behavior before launching a real print.
+
+1. Confirm baseline material/nozzle default selection:
+
+```gcode
+DYNAMIC_PRESSURE_ADVANCE MATERIAL=PLA NOZZLE=0.4 FORCE_PA=True SMOOTH_TIME=0.03
+```
+
+Expected: module applies printer-side default for PLA with 0.4 nozzle scaling.
+
+2. Confirm slicer-style pressure advance passthrough:
+
+```gcode
+DYNAMIC_PRESSURE_ADVANCE MATERIAL=PETG PRESSURE_ADVANCE=0.05 NOZZLE=0.4 FORCE_PA=False SMOOTH_TIME=0.03
+```
+
+Expected: `SET_PRESSURE_ADVANCE` should use `0.05` when it is in the safe range.
+
+3. Confirm invalid slicer value fallback path:
+
+```gcode
+DYNAMIC_PRESSURE_ADVANCE MATERIAL=PETG PRESSURE_ADVANCE=-1 NOZZLE=0.4 FORCE_PA=False SMOOTH_TIME=0.03
+```
+
+Expected: warning message in console, then fallback to the material-derived value (not a hard failure).
+
+4. Confirm smooth time validation:
+
+```gcode
+DYNAMIC_PRESSURE_ADVANCE MATERIAL=ABS PRESSURE_ADVANCE=0.06 NOZZLE=0.4 FORCE_PA=False SMOOTH_TIME=1.0
+```
+
+Expected: smooth time is clamped/fallback-handled to a safe value per module logic.
+
+5. Verify your full `PRINT_START` parameter mapping without printing a part:
+
+```gcode
+PRINT_START MATERIAL=PLA BED_TEMP=60 EXTRUDER_TEMP=210 NOZZLE=0.4 FORCE_PA=False SMOOTH_TIME=0.03
+```
+
+Expected: no unknown-parameter errors, and `DYNAMIC_PRESSURE_ADVANCE` receives values exactly as your slicer will pass them.
+
+Tip: Use `FORCE_PA=True` during diagnosis to isolate printer-side defaults from slicer-provided variables.
+
 ## Notes
 
 - Keep slicer variable names aligned with your slicer profile.
