@@ -5,6 +5,16 @@ Source files:
 - `Caselight Effects/caselight_effects_core_module.cfg`
 - `Caselight Effects/caselight_effects_sequences_module.cfg`
 
+## Quick Navigation
+
+- [Dependency Order](#dependency-order)
+- [Core Effect Macros](#core-effect-macros)
+- [Predefined Sequence Macros](#predefined-sequence-macros)
+- [Quick Usage Examples](#quick-usage-examples)
+- [RESPOND Message Convention](#respond-message-convention)
+- [Building Custom Sequences](#building-custom-sequences)
+- [Notes](#notes)
+
 ## Dependency Order
 
 The sequences module depends on the core module.

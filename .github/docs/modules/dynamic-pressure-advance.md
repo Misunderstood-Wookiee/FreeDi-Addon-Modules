@@ -2,6 +2,18 @@
 
 Source file: `Dynamic Pressure Advance/dynamic_pressure_advance_module.cfg`
 
+## Quick Navigation
+
+- [Macro](#macro)
+- [Purpose](#purpose)
+- [Parameters](#parameters)
+- [Behavior Summary](#behavior-summary)
+- [Start G-code Example](#start-g-code-example)
+- [Recommended PRINT_START Parameters](#recommended-print_start-parameters)
+- [Slicer Examples](#slicer-examples)
+- [Debug and Testing (Before Printing)](#debug-and-testing-before-printing)
+- [Notes](#notes)
+
 ## Macro
 
 - `DYNAMIC_PRESSURE_ADVANCE`

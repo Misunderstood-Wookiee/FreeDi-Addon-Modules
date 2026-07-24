@@ -2,6 +2,19 @@
 
 Source file: `Bed Soak/bed_soak_module.cfg`
 
+## Quick Navigation
+
+- [Macro](#macro)
+- [Purpose](#purpose)
+- [Parameters](#parameters)
+- [Behavior Summary](#behavior-summary)
+- [Typical Usage](#typical-usage)
+- [Recommended PRINT_START Parameters](#recommended-print_start-parameters)
+- [Slicer Examples](#slicer-examples)
+- [Duration Guidance](#duration-guidance)
+- [Debug and Testing (Before Printing)](#debug-and-testing-before-printing)
+- [Notes](#notes)
+
 ## Macro
 
 - `BED_SOAK`

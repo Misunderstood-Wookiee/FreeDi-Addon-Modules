@@ -2,6 +2,15 @@
 
 Source file: `Adapative Line Purge/adaptive_line_purge.cfg`
 
+## Quick Navigation
+
+- [Macro](#macro)
+- [Purpose](#purpose)
+- [Config Variables](#config-variables)
+- [Behavior Summary](#behavior-summary)
+- [Typical Usage](#typical-usage)
+- [Notes](#notes)
+
 ## Macro
 
 - `LINE_PURGE`
