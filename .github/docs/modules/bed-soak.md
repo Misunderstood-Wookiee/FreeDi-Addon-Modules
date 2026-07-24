@@ -21,7 +21,7 @@ Source file: `Bed Soak/bed_soak_module.cfg`
 
 ## Purpose
 
-Waits for the bed to reach the resolved soak target temperature and then performs a material-aware soak to improve thermal stability before printing.
+Waits for the bed to reach the resolved soak target temperature floor and then performs a material-aware soak to improve thermal stability before printing.
 
 ## Parameters
 
@@ -34,7 +34,7 @@ Waits for the bed to reach the resolved soak target temperature and then perform
 
 1. Normalizes material name into known families.
 2. Determines if soak is required using material class, resolved soak temperature, or force override.
-3. Waits for soak target stability with `TEMPERATURE_WAIT`.
+3. Waits for the soak target floor with `TEMPERATURE_WAIT` (minimum threshold only).
 4. Applies material-specific soak duration.
 5. Emits status messages for operator visibility.
 
@@ -159,4 +159,5 @@ Tip: For faster test loops, use low but realistic bed targets (for example `50-6
 
 - Soak temperature resolution order is `BED_TEMP` -> `bed_target_temp` -> `printer.heater_bed.target` -> `60` C.
 - Soak may be skipped when conditions do not require it.
-- This macro is blocking by design while soak is running.
+- This macro is blocking by design while soak is running. Console commands entered during soak are queued and execute after the macro returns.
+- The wait step uses only `MINIMUM` (no `MAXIMUM`) to reduce long stalls from normal PID overshoot.
