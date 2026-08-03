@@ -1,12 +1,12 @@
 # Adaptive Line Purge
 
-Source file: `Adapative Line Purge/adaptive_line_purge.cfg`
+Source file: `Adapative Line Purge/adaptive_line_purge.module.cfg`
 
 ## Quick Navigation
 
 - [Macro](#macro)
 - [Purpose](#purpose)
-- [Config Variables](#config-variables)
+- [Parameters](#parameters)
 - [Behavior Summary](#behavior-summary)
 - [Typical Usage](#typical-usage)
 - [Notes](#notes)
@@ -19,7 +19,7 @@ Source file: `Adapative Line Purge/adaptive_line_purge.cfg`
 
 Places a purge line near the active print area using `exclude_object` polygon data when available, while preserving printer state before returning control.
 
-## Config Variables
+## Parameters
 
 - `variable_purge_height=<float>`: Z height for purge motion. Default is `0.8`.
 - `variable_tip_distance=<float>`: Filament tip move before purge extrusion. Default is `-4.0`.

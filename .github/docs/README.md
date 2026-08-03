@@ -16,14 +16,16 @@ For non-FreeDi stacks, treat these modules as use-at-your-own-risk and validate 
 - [Adaptive Line Purge](modules/adaptive-line-purge.md)
 - [Bed Soak](modules/bed-soak.md)
 - [Caselight Effects](modules/caselight-effects.md)
+- [Clean Nozzle](modules/clean-nozzle.md)
 
 ## Repository Layout
 
-- `Adapative Pressure Advance/dynamic_pressure_advance_module.cfg`
-- `Adapative Line Purge/adaptive_line_purge.cfg`
+- `Dynamic Pressure Advance/dynamic_pressure_advance_module.cfg`
+- `Adapative Line Purge/adaptive_line_purge.module.cfg`
 - `Bed Soak/bed_soak_module.cfg`
 - `Caselight Effects/caselight_effects_core_module.cfg`
 - `Caselight Effects/caselight_effects_sequences_module.cfg`
+- `X-Series 3/clean_nozzle.cfg`
 
 ## Ongoing Documentation
 

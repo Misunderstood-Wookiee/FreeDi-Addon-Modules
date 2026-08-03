@@ -19,6 +19,7 @@ Current modules include:
 - Adaptive Line Purge
 - Bed Soak
 - Caselight Effects
+- Clean Nozzle
 
 ## Documentation
 
@@ -31,5 +32,6 @@ Full project documentation is provided in the GitHub docs pages in this reposito
 - [Adaptive Line Purge](.github/docs/modules/adaptive-line-purge.md)
 - [Bed Soak](.github/docs/modules/bed-soak.md)
 - [Caselight Effects](.github/docs/modules/caselight-effects.md)
+- [Clean Nozzle](.github/docs/modules/clean-nozzle.md)
 
 As new modules are added or existing modules are updated, corresponding documentation updates will be published in these GitHub docs pages.

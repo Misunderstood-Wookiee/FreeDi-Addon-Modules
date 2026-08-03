@@ -10,6 +10,7 @@ Included modules:
 - Adaptive Line Purge
 - Bed Soak
 - Caselight Effects
+- Clean Nozzle
 
 ## Required Platform Context
 
@@ -23,10 +24,11 @@ For non-FreeDi stacks, treat these modules as use-at-your-own-risk and validate 
 ## Module Source Files
 
 - `Dynamic Pressure Advance/dynamic_pressure_advance_module.cfg`
-- `Adapative Line Purge/adaptive_line_purge.cfg`
+- `Adapative Line Purge/adaptive_line_purge.module.cfg`
 - `Bed Soak/bed_soak_module.cfg`
 - `Caselight Effects/caselight_effects_core_module.cfg`
 - `Caselight Effects/caselight_effects_sequences_module.cfg`
+- `X-Series 3/clean_nozzle.cfg`
 
 ## Documentation Maintenance
 

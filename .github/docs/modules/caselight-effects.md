@@ -32,7 +32,7 @@ Load order requirement:
 - `WAVE_SMOOTH_CASELIGHT`
 - `PULSE_CASELIGHT`
 
-These are reusable building blocks that can be called directly or chained in custom sequences.
+These are reusable building blocks that can be called directly or chained together in custom sequences.
 
 ## Predefined Sequence Macros
 
