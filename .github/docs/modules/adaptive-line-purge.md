@@ -30,6 +30,10 @@ Places a purge line near the active print area using `exclude_object` polygon da
 - `variable_purge_wave_amplitude=<float>`: Maximum offset from the centerline when using the zig-zag pattern. Smaller values give a softer wave; larger values make the path more pronounced.
 - `variable_purge_wave_spacing=<float>`: Distance between wave points when using the zig-zag pattern. Smaller values create a smoother wave; larger values create a sharper zig-zag.
 
+Example presets:
+- Visible zig-zag: `variable_purge_wave_amplitude=3.0` and `variable_purge_wave_spacing=1.0`
+- Prusa Core One style: `variable_purge_wave_amplitude=0.6` and `variable_purge_wave_spacing=0.5`
+
 ## Behavior Summary
 
 1. Reads object polygons from `exclude_object` when available and falls back safely if they are missing.
