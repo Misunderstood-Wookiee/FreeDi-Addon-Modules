@@ -1,7 +1,7 @@
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Klipper](https://img.shields.io/badge/klipper-compatible-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Misunderstood-Wookiee/FreeDi-Addon-Modules/blob/main/LICENSE)
-![Docs](https://img.shields.io/badge/docs-online-blueviolet)
+[![Docs](https://img.shields.io/badge/docs-online-blueviolet)](https://github.com/Misunderstood-Wookiee/FreeDi-Addon-Modules/tree/main/.github/docs)
 ![Validate Klipper Macros](https://github.com/Misunderstood-Wookiee/FreeDi-Addon-Modules/actions/workflows/validate_macros.yml/badge.svg?branch=main)
 # FreeDi-Addon-Modules
 
