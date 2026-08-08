@@ -17,7 +17,7 @@ Included modules:
 Compatibility guidance:
 
 1. Caselight Effects requires FreeDi Firmware and FreeDi base machine configuration files.
-2. Dynamic Pressure Advance, Adaptive Line Purge, and Bed Soak are designed for FreeDi workflows but may also work on standard mainline Klipper/Kalico firmware depending on your printer configuration.
+2. Dynamic Pressure Advance, Adaptive Line Purge, Nozzle Clean and Bed Soak are designed for FreeDi workflows but may also work on standard mainline Klipper/Kalico firmware depending on your printer configuration.
 
 For non-FreeDi stacks, treat these modules as use-at-your-own-risk and validate behavior before production prints.
 
