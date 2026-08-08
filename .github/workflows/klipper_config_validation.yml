@@ -1,0 +1,47 @@
+name: Klipper Config Validation
+
+on:
+  push:
+    paths:
+      - '**/*.cfg'
+  pull_request:
+    paths:
+      - '**/*.cfg'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Klipper dependencies (if available)
+        run: |
+          # Note: There is no official pip package for 'klippy' validation
+          # You may need to clone Klipper and run internal checks or use community tools
+          pip install jinja2
+      - name: Run basic Jinja2 syntax check
+        run: |
+          python -c "
+          import os
+          import jinja2
+          import sys
+
+          def check_cfg(file_path):
+              try:
+                  with open(file_path, 'r') as f:
+                      content = f.read()
+                  # Basic Jinja2 template compilation check
+                  jinja2.Template(content)
+                  print(f'OK: {file_path}')
+              except jinja2.exceptions.TemplateSyntaxError as e:
+                  print(f'ERROR in {file_path}: {e}')
+                  sys.exit(1)
+
+          for root, dirs, files in os.walk('.'):
+              for file in files:
+                  if file.endswith('.cfg'):
+                      check_cfg(os.path.join(root, file))
+          "   
