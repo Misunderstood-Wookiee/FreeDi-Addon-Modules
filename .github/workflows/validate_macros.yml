@@ -3,7 +3,6 @@ name: Validate Klipper Macros
 on:
   push:
   pull_request:
-  merge:
 
 jobs:
   validate:
