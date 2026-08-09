@@ -122,153 +122,50 @@ Approximate soak durations from current module logic:
 - `PP`: 4 minutes
 - `PC`, `PPA`, `PPS`, `NYLON`, `PA6`, `PA11`, `PA12`, `PAHT`: 5 minutes
 
-Reinforced `CF` and `GF` variants add 30 seconds unless they normalize to low-temp families such as `PLA`, `TPU`, `TPU AIR`, or `PVA`.
+Reinforced `CF` and `GF` variants add 30 seconds unless they normalize to `PLA`, `TPU`, or `PVA`.
 
 ## Debug and Testing (Before Printing)
 
 Run these from the Klipper console (Mainsail/Fluidd) to validate parameter flow and macro behavior before launching a real print.
 
-### Quick Material Checks
+### Minimal Test Set
 
-Use these first when you want a fast sanity check of the material buckets and Orca-style aliases.
+Use this compact matrix to verify each decision path.
 
-1. Foaming TPU aliases should map to the `TPU_AIR` bucket and only soak here because `FORCE_SOAK=True`:
+| Goal | Command | Expected |
+|---|---|---|
+| Force-path sanity check (low-temp material) | `BED_SOAK MATERIAL=PLA BED_TEMP=60 FORCE_SOAK=True` | Soak runs, about `1.5` minutes |
+| Skip-path sanity check (low-temp material) | `BED_SOAK MATERIAL=PLA BED_TEMP=60 FORCE_SOAK=False` | Soak is skipped |
+| Mid-temp family timing | `BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False` | Soak runs, about `2.0` minutes |
+| Engineering family timing | `BED_SOAK MATERIAL=NYLON BED_TEMP=90 FORCE_SOAK=False` | Soak runs, about `5.0` minutes |
+| Foaming TPU alias normalization | `BED_SOAK MATERIAL=TPU-Aero BED_TEMP=45 FORCE_SOAK=True` | Maps to `TPU_AIR`, about `1.0` minute |
+| PEBA alias normalization | `BED_SOAK MATERIAL=PEBAX BED_TEMP=70 FORCE_SOAK=False` | Maps to `PEBA`, about `2.0` minutes |
+| Reinforced blend penalty | `BED_SOAK MATERIAL=PA-CF BED_TEMP=100 FORCE_SOAK=False` | Nylon-class soak plus `+30s` (`~5.5` min) |
+| PET-family alias behavior | `BED_SOAK MATERIAL=PET-CF BED_TEMP=80 FORCE_SOAK=False` | `PET` timing (`2.5` min) plus `+30s` (`~3.0` min) |
+| Bed target fallback | `SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=60` then `BED_SOAK MATERIAL=PLA FORCE_SOAK=False` | Uses `heater_bed.target` when `BED_TEMP` is omitted |
+| Explicit target override | `BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False` | Wait floor is based on `75` C, not previous target |
+| PRINT_START parameter pass-through | `PRINT_START MATERIAL=PLA BED_TEMP=60 EXTRUDER_TEMP=210 FORCE_SOAK=False` | No unknown-parameter errors |
 
-```gcode
-BED_SOAK MATERIAL=TPU-Aero BED_TEMP=45 FORCE_SOAK=True
-BED_SOAK MATERIAL=LW-TPU BED_TEMP=45 FORCE_SOAK=True
-```
+### Optional Alias Spot-Checks
 
-Expected result: soak runs and reports about `1.0` minute.
-
-1. PEBA aliases should map to the warm-bed elastomer bucket:
-
-```gcode
-BED_SOAK MATERIAL=PEBA BED_TEMP=70 FORCE_SOAK=False
-BED_SOAK MATERIAL=PEBAX BED_TEMP=70 FORCE_SOAK=False
-```
-
-Expected result: soak runs automatically and reports about `2.0` minutes.
-
-1. Orca/Bambu nylon composite aliases should map to the nylon family:
+If you change alias logic later, use this reusable pattern instead of adding many hardcoded test blocks:
 
 ```gcode
-BED_SOAK MATERIAL=PA-CF BED_TEMP=100 FORCE_SOAK=False
-BED_SOAK MATERIAL=PA-GF BED_TEMP=90 FORCE_SOAK=False
-BED_SOAK MATERIAL=PA12-CF BED_TEMP=100 FORCE_SOAK=False
+BED_SOAK MATERIAL=<alias_under_test> BED_TEMP=<temp> FORCE_SOAK=False
 ```
 
-Expected result: soak runs automatically and reports about `5.5` minutes for `PA-CF` and `PA-GF`, and about `5.5` minutes for `PA12-CF` because reinforced blends add 30 seconds.
+Suggested aliases to rotate through:
 
-1. Reinforced ABS/ASA aliases should keep their base family and add the composite penalty:
+- `LW-TPU`
+- `PA-GF`
+- `PA12-CF`
+- `ABS-GF`
+- `ASA-CF`
+- `PETG-HF`
+- `Support for PLA-PETG`
+- `Support for PET-PA`
 
-```gcode
-BED_SOAK MATERIAL=ABS-GF BED_TEMP=100 FORCE_SOAK=False
-BED_SOAK MATERIAL=ASA-CF BED_TEMP=100 FORCE_SOAK=False
-```
-
-Expected result: soak runs automatically and reports about `4.0` minutes.
-
-1. PET-family aliases should stay in the shorter mid-temp bucket:
-
-```gcode
-BED_SOAK MATERIAL=PETG-HF BED_TEMP=75 FORCE_SOAK=False
-BED_SOAK MATERIAL=PET-CF BED_TEMP=80 FORCE_SOAK=False
-```
-
-Expected result: `PETG-HF` reports about `2.0` minutes. `PET-CF` reports about `3.0` minutes because `PET` is `2.5` minutes plus 30 seconds for the reinforced blend.
-
-Tip: watch the first `BED_SOAK active` line and the later `Bed soaking for ... minutes` line. Together they confirm alias matching, soak decision, and final duration.
-
-### Basic Material Checks
-
-Use these when you want to confirm the standard material families still map to the expected soak buckets.
-
-1. Low-temp families should only soak when forced:
-
-```gcode
-BED_SOAK MATERIAL=PLA BED_TEMP=60 FORCE_SOAK=True
-BED_SOAK MATERIAL=TPU BED_TEMP=50 FORCE_SOAK=True
-BED_SOAK MATERIAL=PVA BED_TEMP=60 FORCE_SOAK=True
-```
-
-Expected result: each command runs the soak path and reports about `1.5` minutes.
-
-1. Common mid-temp materials should trigger soak automatically:
-
-```gcode
-BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False
-BED_SOAK MATERIAL=PCTG BED_TEMP=80 FORCE_SOAK=False
-BED_SOAK MATERIAL=PET BED_TEMP=80 FORCE_SOAK=False
-```
-
-Expected result: `PETG` reports about `2.0` minutes. `PCTG` and `PET` report about `2.5` minutes.
-
-1. Utility and enclosure-prone materials should show the longer middle buckets:
-
-```gcode
-BED_SOAK MATERIAL=HIPS BED_TEMP=90 FORCE_SOAK=False
-BED_SOAK MATERIAL=PP BED_TEMP=100 FORCE_SOAK=False
-```
-
-Expected result: `HIPS` reports about `3.0` minutes. `PP` reports about `4.0` minutes.
-
-1. High-temp engineering families should all trigger the long soak bucket:
-
-```gcode
-BED_SOAK MATERIAL=PC BED_TEMP=110 FORCE_SOAK=False
-BED_SOAK MATERIAL=PPA BED_TEMP=100 FORCE_SOAK=False
-BED_SOAK MATERIAL=PPS BED_TEMP=110 FORCE_SOAK=False
-BED_SOAK MATERIAL=NYLON BED_TEMP=90 FORCE_SOAK=False
-BED_SOAK MATERIAL=PA6 BED_TEMP=90 FORCE_SOAK=False
-BED_SOAK MATERIAL=PA11 BED_TEMP=90 FORCE_SOAK=False
-```
-
-Expected result: each command reports about `5.0` minutes.
-
-1. Warp-prone structural materials should sit between mid-temp and engineering families:
-
-```gcode
-BED_SOAK MATERIAL=ABS BED_TEMP=100 FORCE_SOAK=False
-BED_SOAK MATERIAL=ASA BED_TEMP=100 FORCE_SOAK=False
-```
-
-Expected result: each command reports about `3.5` minutes.
-
-1. Confirm your bed target fallback path works:
-
-```gcode
-SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=60
-BED_SOAK MATERIAL=PLA FORCE_SOAK=False
-```
-
-Expected: `BED_SOAK` should resolve to the current bed target (`60`) even without `BED_TEMP`.
-
-1. Confirm explicit temperature override is honored:
-
-```gcode
-BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False
-```
-
-Expected: the macro should wait on `75` C (not the previous heater target) and apply PETG-class soak timing.
-
-1. Confirm force behavior for quick validation cycles:
-
-```gcode
-BED_SOAK MATERIAL=PLA BED_TEMP=60 FORCE_SOAK=True
-```
-
-Expected: soak path is forced and status messages clearly show execution of the soak branch.
-
-1. Verify your full `PRINT_START` parameter mapping without printing a part:
-
-```gcode
-PRINT_START MATERIAL=PLA BED_TEMP=60 EXTRUDER_TEMP=210 FORCE_SOAK=False
-```
-
-Expected: no unknown-parameter errors, and `BED_SOAK` receives the values your slicer is expected to pass.
-
-Tip: For faster test loops, use low but realistic bed targets (for example `50-60` C) and watch console output for each decision branch.
+Tip: watch the first `BED_SOAK active/skipped` line and the later `Bed soaking for ... minutes` line. Together they confirm alias matching, soak decision, and final duration.
 
 ## Notes
 

@@ -45,7 +45,7 @@ gcode:
     {% set nozzle = params.NOZZLE|default(0.4)|float %}
     {% set force_soak = params.FORCE_SOAK|default("False")|lower == "true" %}
     {% set force_pa = params.FORCE_PA|default("False")|lower == "true" %}
-    {% set smooth_time = params.SMOOTH_TIME|default(0.03)|float %}
+    {% set smooth_time = params.SMOOTH_TIME|default(0.04)|float %}
 
     BED_SOAK MATERIAL={material} BED_TEMP={bed_target_temp} FORCE_SOAK={force_soak}
 
@@ -70,31 +70,31 @@ These examples show what the slicer should pass into `PRINT_START` when both mod
 ### PrusaSlicer
 
 ```gcode
-PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature] NOZZLE=[nozzle_diameter] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.03
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature] NOZZLE=[nozzle_diameter] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.04
 ```
 
 If you maintain a slicer-side pressure advance variable in your profile:
 
 ```gcode
-PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature] NOZZLE=[nozzle_diameter] PRESSURE_ADVANCE=[pressure_advance] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.03
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature] NOZZLE=[nozzle_diameter] PRESSURE_ADVANCE=[pressure_advance] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.04
 ```
 
 ### OrcaSlicer
 
 ```gcode
-PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[nozzle_temperature_initial_layer] NOZZLE=[nozzle_diameter] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.03
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[nozzle_temperature_initial_layer] NOZZLE=[nozzle_diameter] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.04
 ```
 
 If you maintain a slicer-side pressure advance variable in your profile:
 
 ```gcode
-PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[nozzle_temperature_initial_layer] NOZZLE=[nozzle_diameter] PRESSURE_ADVANCE=[pressure_advance] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.03
+PRINT_START MATERIAL=[filament_type] BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[nozzle_temperature_initial_layer] NOZZLE=[nozzle_diameter] PRESSURE_ADVANCE=[pressure_advance] FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.04
 ```
 
 ### Cura
 
 ```gcode
-PRINT_START MATERIAL={material_type} BED_TEMP={material_bed_temperature_layer_0} EXTRUDER_TEMP={material_print_temperature_layer_0} NOZZLE={machine_nozzle_size} FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.03
+PRINT_START MATERIAL={material_type} BED_TEMP={material_bed_temperature_layer_0} EXTRUDER_TEMP={material_print_temperature_layer_0} NOZZLE={machine_nozzle_size} FORCE_PA=False FORCE_SOAK=False SMOOTH_TIME=0.04
 ```
 
 In Cura, pressure advance is typically better left to the Klipper module unless you already maintain a custom variable for it.
