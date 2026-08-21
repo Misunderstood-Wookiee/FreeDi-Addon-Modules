@@ -29,7 +29,8 @@ The macro exposes a set of configurable variables in the source file:
 - `passes=<int>`: Number of wipe passes. Default is `4`.
 - `wipe_temp=<int>`: Hotend target temperature used before wiping. Default is `180`.
 - `min_wipe_temp=<int>`: Minimum actual nozzle temperature required before wiping. Default is `150`.
-- `safe_travel_z=<float>`: Safe travel height before XY motion. Default is `20.0`.
+- `safe_travel_z=<float>`: Safe travel height before XY motion. Default is `20.0`. Must be greater than or equal to both `begin_z` and `end_z`.
+- `position_tolerance=<float>`: How far, in mm, the toolhead's actual position is allowed to drift from the commanded wipe-start point before the macro treats it as a failed move (e.g. skipped steps or a stall) and aborts with an error instead of wiping in the wrong spot. Default is `0.5`.
 - `approach_speed=<int>`: Speed for approach and reposition moves. Default is `15000`.
 - `wipe_speed=<int>`: Speed for the actual wipe strokes. Default is `8000`.
 - `start_pause_ms=<int>`: Pause after reaching the wipe start. Default is `50`.
@@ -40,12 +41,14 @@ The macro exposes a set of configurable variables in the source file:
 
 ## Behavior Summary
 
-1. Validates the wipe configuration variables before moving.
-2. Homes the printer if the axes are not already homed.
-3. Heats the nozzle to the configured wipe temperature when needed.
-4. Moves the toolhead to the configured wipe start position and performs the swish path.
-5. Optionally powers down the hotend and re-homes after wiping when the printer is not actively printing or paused.
+1. Validates the wipe configuration variables before moving, including that `begin_z`/`end_z` do not exceed `safe_travel_z`.
+2. Homes the printer if the axes are not already homed, then confirms `homed_axes` actually reports `xyz` before continuing.
+3. Heats the nozzle to the configured wipe temperature when needed, then confirms the extruder actually reached `min_wipe_temp` rather than assuming `M109` succeeded.
+4. Moves the toolhead to the configured wipe start position, flushes the motion queue (`M400`), and confirms the toolhead is within `position_tolerance` of the expected coordinates before performing the swish path.
+5. Optionally powers down the hotend and re-homes after wiping when the printer is not actively printing or paused, re-confirming homing succeeded.
 6. Restores the previous G-code state after the routine finishes.
+
+Each verification step raises a descriptive error via `action_raise_error` instead of failing silently. Every error message states the likely cause and an actionable fix (e.g. which variable to adjust), and is visible in the console/log.
 
 ## Typical Usage
 
