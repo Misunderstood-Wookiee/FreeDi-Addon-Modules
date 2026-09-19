@@ -29,6 +29,8 @@ Places a purge line near the active print area using `exclude_object` polygon da
 - `variable_purge_pattern=<string>`: Purge path style. Use `straight` for the default straight-line purge, or `zigzag` for an alternating wave-like path.
 - `variable_purge_wave_amplitude=<float>`: Maximum offset from the centerline when using the zig-zag pattern. Smaller values give a softer wave; larger values make the path more pronounced.
 - `variable_purge_wave_spacing=<float>`: Distance between wave points when using the zig-zag pattern. Smaller values create a smoother wave; larger values create a sharper zig-zag.
+- `variable_fallback_retract_dist=<float>`: Retract/unretract distance in mm used only when `firmware_retraction` is not configured. `-1` auto-scales from nozzle diameter; a fixed value overrides it (hard capped at 1.2mm).
+- `variable_verbose_enable=<0 or 1>`: Set to `1` to emit extra `RESPOND` status messages about the purge. Default is `0`.
 
 Example presets:
 - Visible zig-zag: `variable_purge_wave_amplitude=3.0` and `variable_purge_wave_spacing=1.0`
@@ -43,6 +45,7 @@ Example presets:
 5. Saves and restores G-code state around the purge routine.
 6. Skips purge and emits an info message if `max_extrude_cross_section` is below safe threshold.
 7. Supports an optional zig-zag path when `variable_purge_pattern` is set to `zigzag`.
+8. Emits extra status messages when `variable_verbose_enable` is set to `1`.
 
 ## Typical Usage
 

@@ -38,6 +38,7 @@ The macro exposes a set of configurable variables in the source file:
 - `powerdown_after_wipe=<int>`: Set to `1` to turn off the hotend after wiping when no print is active. Default is `1`.
 - `home_after_wipe=<int>`: Set to `1` to home the printer after wiping when no print is active. Default is `1`.
 - `LABEL=<string>`: Optional caller-provided context that extends the macro's `RESPOND` message. When supplied, the message becomes `CLEAN_NOZZLE: Wiping nozzle (<passes> passes) - <label>`.
+- `WIPE_TEMP=<int>`: Optional per-run override of `wipe_temp`, useful for setting a one-off wipe temperature directly from the Mainsail/Fluidd macro panel without editing the config. Falls back to `variable_wipe_temp` when not supplied, and is validated against `min_wipe_temp` the same way.
 
 ## Behavior Summary
 
@@ -60,6 +61,12 @@ With an additional label for startup or calibration context:
 
 ```gcode
 CLEAN_NOZZLE LABEL="pre-calibration pass 1/2"
+```
+
+With a one-off temperature override (e.g. run manually from Mainsail/Fluidd):
+
+```gcode
+CLEAN_NOZZLE WIPE_TEMP=200
 ```
 
 In this case, the macro appends the label to the status message so the console output clearly shows the caller context, for example:
