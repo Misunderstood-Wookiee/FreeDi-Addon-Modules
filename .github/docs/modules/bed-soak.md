@@ -36,9 +36,10 @@ Common OrcaSlicer/Bambu-style aliases normalized by this macro include `TPU-Aero
 
 1. Normalizes material name into known families.
 2. Determines if soak is required using material class, resolved soak temperature, or force override.
-3. Waits for the soak target floor with `TEMPERATURE_WAIT` (minimum threshold only).
-4. Applies material-specific soak duration.
-5. Emits status messages for operator visibility.
+3. Checks the bed's current temperature against the resolved soak target. If it is already at or above target (bed was manually preheated), the soak is skipped even when it would otherwise be required, unless `FORCE_SOAK=True`.
+4. Waits for the soak target floor with `TEMPERATURE_WAIT` (minimum threshold only).
+5. Applies material-specific soak duration.
+6. Emits status messages for operator visibility, including a distinct message when skipped due to preheat.
 
 ## Typical Usage
 
@@ -144,6 +145,8 @@ Use this compact matrix to verify each decision path.
 | PET-family alias behavior | `BED_SOAK MATERIAL=PET-CF BED_TEMP=80 FORCE_SOAK=False` | `PET` timing (`2.5` min) plus `+30s` (`~3.0` min) |
 | Bed target fallback | `SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=60` then `BED_SOAK MATERIAL=PLA FORCE_SOAK=False` | Uses `heater_bed.target` when `BED_TEMP` is omitted |
 | Explicit target override | `BED_SOAK MATERIAL=PETG BED_TEMP=75 FORCE_SOAK=False` | Wait floor is based on `75` C, not previous target |
+| Preheated skip | Preheat bed to `80` C (`SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=80`, wait to reach it) then `BED_SOAK MATERIAL=ABS BED_TEMP=80 FORCE_SOAK=False` | Soak skipped with a "bed already preheated" message even though `ABS` normally requires soak |
+| Preheated but forced | Same preheat as above then `BED_SOAK MATERIAL=ABS BED_TEMP=80 FORCE_SOAK=True` | Soak still runs; `FORCE_SOAK=True` overrides the preheat skip |
 | PRINT_START parameter pass-through | `PRINT_START MATERIAL=PLA BED_TEMP=60 EXTRUDER_TEMP=210 FORCE_SOAK=False` | No unknown-parameter errors |
 
 ### Optional Alias Spot-Checks
@@ -171,5 +174,6 @@ Tip: watch the first `BED_SOAK active/skipped` line and the later `Bed soaking f
 
 - Soak temperature resolution order is `BED_TEMP` -> `bed_target_temp` -> `printer.heater_bed.target` -> `60` C.
 - Soak may be skipped when conditions do not require it.
+- Soak is also skipped when the bed's current temperature is already at or above the resolved soak target (within `0.5` C), since manually preheating the bed ahead of time already satisfies the thermal stabilization this macro provides. Set `FORCE_SOAK=True` to soak anyway.
 - This macro is blocking by design while soak is running. Console commands entered during soak are queued and execute after the macro returns.
 - The wait step uses only `MINIMUM` (no `MAXIMUM`) to reduce long stalls from normal PID overshoot.
