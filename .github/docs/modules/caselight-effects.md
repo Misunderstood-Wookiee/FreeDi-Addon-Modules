@@ -5,6 +5,11 @@ Source files:
 - `Caselight Effects/caselight_effects_core_module.cfg`
 - `Caselight Effects/caselight_effects_sequences_module.cfg`
 
+Download:
+
+- [caselight_effects_core_module.cfg](../../../Modules/Caselight%20Effects/caselight_effects_core_module.cfg)
+- [caselight_effects_sequences_module.cfg](../../../Modules/Caselight%20Effects/caselight_effects_sequences_module.cfg)
+
 ## Quick Navigation
 
 - [Dependency Order](#dependency-order)

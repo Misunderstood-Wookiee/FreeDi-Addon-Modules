@@ -2,6 +2,8 @@
 
 Source file: `X-Series 3/clean_nozzle.cfg`
 
+Download: [clean_nozzle.cfg](../../../Modules/X-Series%203/clean_nozzle.cfg)
+
 ## Quick Navigation
 
 - [Macro](#macro)

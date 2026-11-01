@@ -2,6 +2,8 @@
 
 Source file: `Adapative Line Purge/adaptive_line_purge.module.cfg`
 
+Download: [adaptive_line_purge.module.cfg](../../../Modules/Adapative%20Line%20Purge/adaptive_line_purge.module.cfg)
+
 ## Quick Navigation
 
 - [Macro](#macro)

@@ -2,6 +2,8 @@
 
 Source file: `Bed Soak/bed_soak_module.cfg`
 
+Download: [bed_soak_module.cfg](../../../Modules/Bed%20Soak/bed_soak_module.cfg)
+
 ## Quick Navigation
 
 - [Macro](#macro)
