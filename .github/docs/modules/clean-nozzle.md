@@ -20,7 +20,7 @@ Download: [clean_nozzle.cfg](../../../Modules/X-Series%203/clean_nozzle.cfg)
 
 ## Purpose
 
-Performs a nozzle wipe over a configured brush path. The macro homes the printer if needed, heats the hotend to a safe wipe temperature, moves over the brush, and then optionally powers down the hotend or homes again depending on print state.
+Performs a nozzle wipe over a configured brush path. The macro homes the printer if needed, heats the hotend to a safe wipe temperature, moves over the brush, and then optionally powers down the hotend, cools it with the part fan, or homes again depending on print state.
 
 This script is intended for general Klipper machines that do not have any specific nozzle cleaning routine requirements, and it is also suitable for DIY nozzle installations on X-Series 3, Plus 3, Max 3, and X-Smart 3 printers. It is not intended for use with Q1-Pro, Plus 4, or machines that already use purge chute routines.
 
@@ -31,6 +31,7 @@ The macro exposes a set of configurable variables in the source file:
 - `passes=<int>`: Number of wipe passes. Default is `4`.
 - `wipe_temp=<int>`: Hotend target temperature used before wiping. Default is `180`.
 - `min_wipe_temp=<int>`: Minimum actual nozzle temperature required before wiping. Default is `150`.
+- `cooling_temp=<int>`: After the wipe, the part fan cools a hotter nozzle down to this temperature before re-homing. Only runs when `home_after_wipe` is `1` and no print is active or paused. Set to `0` to disable. Default is `150`.
 - `safe_travel_z=<float>`: Safe travel height before XY motion. Default is `20.0`. Must be greater than or equal to both `begin_z` and `end_z`.
 - `position_tolerance=<float>`: How far, in mm, the toolhead's actual position is allowed to drift from the commanded wipe-start point before the macro treats it as a failed move (e.g. skipped steps or a stall) and aborts with an error instead of wiping in the wrong spot. Default is `0.5`.
 - `approach_speed=<int>`: Speed for approach and reposition moves. Default is `15000`.
@@ -48,8 +49,10 @@ The macro exposes a set of configurable variables in the source file:
 2. Homes the printer if the axes are not already homed, then confirms `homed_axes` actually reports `xyz` before continuing.
 3. Heats the nozzle to the configured wipe temperature when needed, then confirms the extruder actually reached `min_wipe_temp` rather than assuming `M109` succeeded.
 4. Moves the toolhead to the configured wipe start position, flushes the motion queue (`M400`), and confirms the toolhead is within `position_tolerance` of the expected coordinates before performing the swish path.
-5. Optionally powers down the hotend and re-homes after wiping when the printer is not actively printing or paused, re-confirming homing succeeded.
-6. Restores the previous G-code state after the routine finishes.
+5. Optionally powers down the hotend after wiping when the printer is not actively printing or paused.
+6. Before re-homing, runs the part fan at 100% until the nozzle is at or below `cooling_temp`, then restores the previous fan speed. If `powerdown_after_wipe` is `0`, the heater target is set to `cooling_temp` so the cool-down can complete.
+7. Re-homes after wiping when the printer is not actively printing or paused, re-confirming homing succeeded.
+8. Restores the previous G-code state after the routine finishes.
 
 Each verification step raises a descriptive error via `action_raise_error` instead of failing silently. Every error message states the likely cause and an actionable fix (e.g. which variable to adjust), and is visible in the console/log.
 
@@ -91,4 +94,5 @@ If your `PRINT_START` flow already includes a nozzle cleaning step, keep the cal
 
 - The wipe path coordinates are configured in the module file and should be adjusted for your printer geometry.
 - The macro is state-aware and avoids interfering with an active or paused print.
+- The post-wipe cool-down keeps the nozzle at or below `cooling_temp` before `G28`.
 - The default configuration is intended for the X-Series 3 workflow and should be verified with your own printer limits before use.
